@@ -1,26 +1,190 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode (driven by next-themes) instead of Tailwind v4's
+   default prefers-color-scheme strategy. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ---- Brand ---- */
+  --brand-purple: #7c6cf6;
+  --brand-indigo: #6d5ef0;
+  --brand-blue: #3fb9f5;
+  --brand-cyan: #22d3ee;
+
+  /* ---- Accent semantics (consistent across themes) ---- */
+  --accent-green: #34d399;
+  --accent-amber: #f5a623;
+  --accent-red: #f36a6a;
+
+  /* ---- Light theme surface ---- */
+  --bg: #f4f3fc;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #f7f6ff;
+  --surface-active: #edebfb;
+  --border: rgba(31, 25, 68, 0.08);
+  --border-strong: rgba(31, 25, 68, 0.14);
+  --text-primary: #1a1730;
+  --text-secondary: #5b5675;
+  --text-muted: #8b86a3;
+  --shadow-color: 231 34% 60%;
+  --ring: rgba(124, 108, 246, 0.45);
+}
+
+.dark {
+  --bg: #0a0b12;
+  --bg-elevated: #10121c;
+  --surface: #151726;
+  --surface-hover: #1a1d2f;
+  --surface-active: #1f2238;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text-primary: #f3f2fb;
+  --text-secondary: #a8a4c2;
+  --text-muted: #746f92;
+  --shadow-color: 240 60% 3%;
+  --ring: rgba(124, 108, 246, 0.55);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-indigo: var(--brand-indigo);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-accent-green: var(--accent-green);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-red: var(--accent-red);
+
+  --font-sans: var(--font-inter);
+
+  --radius-jb-sm: 0.625rem;
+  --radius-jb-md: 0.875rem;
+  --radius-jb-lg: 1.25rem;
+  --radius-jb-xl: 1.75rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+::selection {
+  background: var(--brand-purple);
+  color: white;
+}
+
+/* Focus visibility -- keep it clear but not jarring */
+:focus-visible {
+  outline: 2px solid var(--brand-purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Utility: soft brand gradient used for primary CTAs + wordmark */
+.jb-gradient-text {
+  background: linear-gradient(90deg, var(--brand-purple), var(--brand-blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.jb-gradient-bg {
+  background: linear-gradient(135deg, var(--brand-purple), var(--brand-blue));
+}
+
+/* Force a specific theme's tokens on a subtree regardless of the page's
+   active theme -- used to show both light & dark app previews side by side. */
+.jb-force-light {
+  --bg: #f4f3fc;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #f7f6ff;
+  --surface-active: #edebfb;
+  --border: rgba(31, 25, 68, 0.08);
+  --border-strong: rgba(31, 25, 68, 0.14);
+  --text-primary: #1a1730;
+  --text-secondary: #5b5675;
+  --text-muted: #8b86a3;
+  --shadow-color: 231 34% 60%;
+  color-scheme: light;
+}
+
+.jb-force-dark {
+  --bg: #0a0b12;
+  --bg-elevated: #10121c;
+  --surface: #151726;
+  --surface-hover: #1a1d2f;
+  --surface-active: #1f2238;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text-primary: #f3f2fb;
+  --text-secondary: #a8a4c2;
+  --text-muted: #746f92;
+  --shadow-color: 240 60% 3%;
+  color-scheme: dark;
+}
+
+.jb-card-shadow {
+  box-shadow: 0 1px 2px hsl(var(--shadow-color) / 0.06),
+    0 12px 32px -12px hsl(var(--shadow-color) / 0.18);
+}
+
+.dark .jb-card-shadow,
+.jb-force-dark .jb-card-shadow {
+  box-shadow: 0 1px 2px hsl(var(--shadow-color) / 0.4),
+    0 20px 48px -16px hsl(var(--shadow-color) / 0.55);
+}
+
+/* Reduced motion: strip non-essential animation/transition/scroll-behavior */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes jb-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.jb-reveal {
+  animation: jb-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
