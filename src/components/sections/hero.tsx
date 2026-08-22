@@ -27,14 +27,9 @@ export function Hero() {
             focus once you&rsquo;re in motion.
           </p>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="#questionnaire" size="lg">
-              Try JumpyBrain free
-            </ButtonLink>
-            <ButtonLink href="#showcase" size="lg" variant="ghost">
-              See it in action
-            </ButtonLink>
-          </div>
+          <ButtonLink href="#questionnaire" size="lg">
+            Try JumpyBrain free
+          </ButtonLink>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-sm text-text-muted">
             <span className="flex items-center gap-1.5">
