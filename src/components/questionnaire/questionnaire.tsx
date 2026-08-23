@@ -164,7 +164,7 @@ export function Questionnaire() {
             {currentQuestion.title}
           </legend>
           {currentQuestion.subtitle ? (
-            <p className="-mt-3 text-sm text-text-secondary">{currentQuestion.subtitle}</p>
+            <p className="-mt-2 text-sm text-text-secondary">{currentQuestion.subtitle}</p>
           ) : null}
           <div className="flex flex-col gap-2.5">
             {currentQuestion.options.map((option) => {
