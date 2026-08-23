@@ -83,7 +83,7 @@ export function Questionnaire() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           answers: {
-            struggle: answers.struggle ?? "",
+            struggle: answers.struggle ?? [],
             blocker: answers.blocker ?? "",
             focusLoss: answers.focusLoss ?? "",
             bigTaskReaction: answers.bigTaskReaction ?? "",

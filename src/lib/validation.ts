@@ -22,7 +22,7 @@ export const feedbackSchema = z.object({
 export type FeedbackInput = z.infer<typeof feedbackSchema>;
 
 export const questionnaireAnswersSchema = z.object({
-  struggle: z.string().min(1).max(120),
+  struggle: z.array(z.string().max(80)).min(1).max(10),
   blocker: z.string().min(1).max(120),
   focusLoss: z.string().min(1).max(120),
   bigTaskReaction: z.string().min(1).max(120),

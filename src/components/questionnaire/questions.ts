@@ -11,8 +11,9 @@ export type Question = {
 export const QUESTIONS: Question[] = [
   {
     id: "struggle",
-    kind: "single",
+    kind: "multi",
     title: "What do you struggle with most?",
+    subtitle: "Pick as many as apply.",
     options: [
       { value: "starting", label: "Getting started on tasks", icon: "🚪" },
       { value: "focus", label: "Staying focused once I start", icon: "🎯" },
