@@ -84,9 +84,9 @@ export function Questionnaire() {
         body: JSON.stringify({
           answers: {
             struggle: answers.struggle ?? [],
-            blocker: answers.blocker ?? "",
-            focusLoss: answers.focusLoss ?? "",
-            bigTaskReaction: answers.bigTaskReaction ?? "",
+            blocker: answers.blocker ?? [],
+            focusLoss: answers.focusLoss ?? [],
+            bigTaskReaction: answers.bigTaskReaction ?? [],
             triedBefore: answers.triedBefore ?? [],
             wantsHelpWith: answers.wantsHelpWith ?? [],
           },

@@ -24,8 +24,9 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: "blocker",
-    kind: "single",
+    kind: "multi",
     title: "What usually stops you from starting a task?",
+    subtitle: "Pick as many as apply.",
     options: [
       { value: "too-big", label: "It feels too big to begin", icon: "🧱" },
       { value: "no-first-step", label: "I don't know the first step", icon: "❓" },
@@ -35,8 +36,9 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: "focusLoss",
-    kind: "single",
+    kind: "multi",
     title: "Once you start, how easily do you lose focus?",
+    subtitle: "Pick as many as apply.",
     options: [
       { value: "immediately", label: "Almost immediately", icon: "💨" },
       { value: "few-minutes", label: "After a few minutes", icon: "⏳" },
@@ -46,8 +48,9 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: "bigTaskReaction",
-    kind: "single",
+    kind: "multi",
     title: "What happens when you have a big task?",
+    subtitle: "Pick as many as apply.",
     options: [
       { value: "freeze", label: "I freeze and avoid it", icon: "🥶" },
       { value: "everything-else", label: "I do everything except that", icon: "🌀" },

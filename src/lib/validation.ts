@@ -23,9 +23,9 @@ export type FeedbackInput = z.infer<typeof feedbackSchema>;
 
 export const questionnaireAnswersSchema = z.object({
   struggle: z.array(z.string().max(80)).min(1).max(10),
-  blocker: z.string().min(1).max(120),
-  focusLoss: z.string().min(1).max(120),
-  bigTaskReaction: z.string().min(1).max(120),
+  blocker: z.array(z.string().max(80)).min(1).max(10),
+  focusLoss: z.array(z.string().max(80)).min(1).max(10),
+  bigTaskReaction: z.array(z.string().max(80)).min(1).max(10),
   triedBefore: z.array(z.string().max(80)).max(10).default([]),
   wantsHelpWith: z.array(z.string().max(80)).max(10).default([]),
 });
