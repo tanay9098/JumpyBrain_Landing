@@ -30,21 +30,6 @@ export function Hero() {
           <ButtonLink href="#questionnaire" size="lg">
             Try JumpyBrain free
           </ButtonLink>
-
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-sm text-text-muted">
-            <span className="flex items-center gap-1.5">
-              <span aria-hidden="true" className="text-accent-green">
-                ●
-              </span>
-              No credit card needed
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span aria-hidden="true" className="text-brand-purple">
-                ●
-              </span>
-              2-minute check-in
-            </span>
-          </div>
         </div>
 
         <div className="jb-reveal [animation-delay:120ms]">
