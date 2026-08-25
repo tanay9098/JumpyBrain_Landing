@@ -27,7 +27,7 @@ export function Hero() {
             focus once you&rsquo;re in motion.
           </p>
 
-          <ButtonLink href="#questionnaire" size="lg">
+          <ButtonLink href="https://bouncy-brain.vercel.app/" size="lg" external>
             Try JumpyBrain free
           </ButtonLink>
         </div>
