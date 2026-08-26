@@ -51,12 +51,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  // If no email was left, there's nothing actionable to deliver -- just
-  // acknowledge success without sending mail (this is an anonymous check-in).
-  if (!email) {
-    return NextResponse.json({ ok: true });
-  }
-
   if (!isEmailConfigured()) {
     console.error(
       "[questionnaire] SMTP is not configured — set SMTP_HOST, SMTP_USER, SMTP_PASS, and FEEDBACK_TO_EMAIL."
@@ -79,7 +73,7 @@ export async function POST(request: Request) {
       replyTo: email || undefined,
       text: [
         `Name: ${name || "(not provided)"}`,
-        `Email: ${email}`,
+        `Email: ${email || "(not provided)"}`,
         "",
         ...rows.map((row) => `${row.label}: ${row.display}`),
       ].join("\n"),
@@ -87,7 +81,7 @@ export async function POST(request: Request) {
         <div style="font-family: sans-serif; line-height: 1.6;">
           <h2 style="margin: 0 0 12px;">New quick check-in submission</h2>
           <p><strong>Name:</strong> ${escapeHtml(name || "(not provided)")}</p>
-          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+          <p><strong>Email:</strong> ${email ? escapeHtml(email) : "(not provided)"}</p>
           <table cellpadding="6" style="border-collapse: collapse; margin-top: 12px;">
             ${rows
               .map(
