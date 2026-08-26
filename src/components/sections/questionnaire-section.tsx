@@ -13,9 +13,9 @@ export function QuestionnaireSection() {
       <Container className="flex flex-col items-center gap-10">
         <Reveal>
           <SectionHeading
-            eyebrow="2-minute check-in"
+            eyebrow="Quick check-in"
             title="A quick, friendly check-in — not a diagnosis"
-            description="Six easy questions to help us understand what would actually help you. No medical assessment, no wrong answers, no pressure."
+            description="A few easy questions, one at a time, to help us understand your ADHD journey and what would actually help you. No medical assessment, no wrong answers, no pressure."
           />
         </Reveal>
 

@@ -4,16 +4,23 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { OptionCard } from "./option-card";
 import { AFFIRMATIONS, QUESTIONS } from "./questions";
+import { ONBOARDING_QUESTIONS } from "./onboarding-questions";
 import { emailSchema } from "@/lib/validation";
 
 type Answers = Record<string, string | string[]>;
 type Status = "in-progress" | "submitting" | "success" | "error";
 
-const TOTAL_STEPS = QUESTIONS.length + 1; // +1 for the summary/email step
+const ALL_QUESTIONS = [...ONBOARDING_QUESTIONS, ...QUESTIONS];
+
+const CONTACT_STEP = 0;
+const SUMMARY_STEP = ALL_QUESTIONS.length + 1;
+const TOTAL_STEPS = ALL_QUESTIONS.length + 2; // contact step + questions + summary step
 
 export function Questionnaire() {
   const [stepIndex, setStepIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
+  const [otherTexts, setOtherTexts] = useState<Record<string, string>>({});
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("in-progress");
@@ -25,8 +32,9 @@ export function Questionnaire() {
     renderedAt.current = Date.now();
   }, []);
 
-  const isSummaryStep = stepIndex === QUESTIONS.length;
-  const currentQuestion = isSummaryStep ? null : QUESTIONS[stepIndex];
+  const isContactStep = stepIndex === CONTACT_STEP;
+  const isSummaryStep = stepIndex === SUMMARY_STEP;
+  const currentQuestion = isContactStep || isSummaryStep ? null : ALL_QUESTIONS[stepIndex - 1];
 
   const affirmation = useMemo(
     () => AFFIRMATIONS[stepIndex % AFFIRMATIONS.length],
@@ -44,17 +52,31 @@ export function Questionnaire() {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   }
 
-  function toggleMulti(questionId: string, value: string) {
+  function toggleMulti(questionId: string, value: string, exclusiveValue?: string) {
     setAnswers((prev) => {
       const existing = Array.isArray(prev[questionId]) ? (prev[questionId] as string[]) : [];
-      const next = existing.includes(value)
-        ? existing.filter((v) => v !== value)
-        : [...existing, value];
+      let next: string[];
+      if (exclusiveValue && value === exclusiveValue) {
+        next = existing.includes(value) ? [] : [value];
+      } else {
+        const base = exclusiveValue ? existing.filter((v) => v !== exclusiveValue) : existing;
+        next = base.includes(value) ? base.filter((v) => v !== value) : [...base, value];
+      }
       return { ...prev, [questionId]: next };
     });
   }
 
   function goNext() {
+    if (isContactStep) {
+      setEmailError(null);
+      if (email.trim()) {
+        const parsed = emailSchema.safeParse(email.trim());
+        if (!parsed.success) {
+          setEmailError(parsed.error.issues[0]?.message ?? "Enter a valid email address.");
+          return;
+        }
+      }
+    }
     if (!canGoNext) return;
     setStepIndex((i) => Math.min(i + 1, TOTAL_STEPS - 1));
   }
@@ -82,7 +104,13 @@ export function Questionnaire() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          name: name.trim(),
           answers: {
+            ageGroup: answers.ageGroup ?? "",
+            diagnosisStatus: answers.diagnosisStatus ?? "",
+            adhdSubtype: answers.adhdSubtype ?? "",
+            comorbidities: answers.comorbidities ?? [],
+            comorbiditiesOther: otherTexts.comorbidities?.trim() ?? "",
             struggle: answers.struggle ?? [],
             blocker: answers.blocker ?? [],
             focusLoss: answers.focusLoss ?? [],
@@ -132,7 +160,11 @@ export function Questionnaire() {
       <div>
         <div className="flex items-center justify-between text-xs font-medium text-text-muted">
           <span>
-            {isSummaryStep ? "Almost done" : `Question ${stepIndex + 1} of ${QUESTIONS.length}`}
+            {isContactStep
+              ? "Let's start with the basics"
+              : isSummaryStep
+                ? "Almost done"
+                : `Question ${stepIndex} of ${ALL_QUESTIONS.length}`}
           </span>
           <span>{Math.round(((stepIndex + 1) / TOTAL_STEPS) * 100)}%</span>
         </div>
@@ -151,76 +183,42 @@ export function Questionnaire() {
         </div>
       </div>
 
-      {stepIndex > 0 ? (
+      {stepIndex > 0 && !isSummaryStep ? (
         <p aria-live="polite" className="text-sm font-medium text-brand-purple dark:text-brand-cyan">
           {affirmation}
         </p>
       ) : null}
 
-      {/* Question or summary */}
-      {currentQuestion ? (
-        <fieldset key={currentQuestion.id} className="flex flex-col gap-4">
-          <legend className="text-xl font-bold text-text-primary sm:text-2xl">
-            {currentQuestion.title}
-          </legend>
-          {currentQuestion.subtitle ? (
-            <p className="-mt-2 text-sm text-text-secondary">{currentQuestion.subtitle}</p>
-          ) : null}
-          <div className="flex flex-col gap-2.5">
-            {currentQuestion.options.map((option) => {
-              const selected =
-                currentQuestion.kind === "single"
-                  ? currentAnswer === option.value
-                  : Array.isArray(currentAnswer) && currentAnswer.includes(option.value);
-              return (
-                <OptionCard
-                  key={option.value}
-                  icon={option.icon}
-                  label={option.label}
-                  selected={selected}
-                  type={currentQuestion.kind === "single" ? "radio" : "checkbox"}
-                  name={currentQuestion.id}
-                  onSelect={() =>
-                    currentQuestion.kind === "single"
-                      ? selectSingle(currentQuestion.id, option.value)
-                      : toggleMulti(currentQuestion.id, option.value)
-                  }
-                />
-              );
-            })}
-          </div>
-        </fieldset>
-      ) : (
+      {/* Contact step */}
+      {isContactStep ? (
         <div className="flex flex-col gap-5">
           <div>
             <h3 className="text-xl font-bold text-text-primary sm:text-2xl">
-              Here&rsquo;s what you told us
+              Let&rsquo;s start with the basics
             </h3>
             <p className="mt-1 text-sm text-text-secondary">
-              Nothing clinical, just a quick snapshot — you can go back and change anything.
+              Both fields are totally optional — skip either one and hit Next.
             </p>
           </div>
 
-          <ul className="flex flex-col gap-2 rounded-jb-md border border-border bg-bg-elevated p-4 text-sm">
-            {QUESTIONS.map((q) => {
-              const value = answers[q.id];
-              const display = Array.isArray(value)
-                ? q.options.filter((o) => value.includes(o.value)).map((o) => o.label).join(", ") || "—"
-                : q.options.find((o) => o.value === value)?.label ?? "—";
-              return (
-                <li key={q.id} className="flex flex-col gap-0.5 border-b border-border pb-2 last:border-0 last:pb-0">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    {q.title}
-                  </span>
-                  <span className="text-text-primary">{display}</span>
-                </li>
-              );
-            })}
-          </ul>
+          <div>
+            <label htmlFor="questionnaire-name" className="text-sm font-semibold text-text-primary">
+              Name <span className="font-normal text-text-muted">(optional)</span>
+            </label>
+            <input
+              id="questionnaire-name"
+              type="text"
+              autoComplete="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="What should we call you?"
+              className="mt-2 h-11 w-full rounded-jb-sm border border-border bg-surface px-4 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-brand-purple"
+            />
+          </div>
 
           <div>
             <label htmlFor="questionnaire-email" className="text-sm font-semibold text-text-primary">
-              Want updates or early access? Leave your email <span className="font-normal text-text-muted">(optional)</span>
+              Email <span className="font-normal text-text-muted">(optional)</span>
             </label>
             <input
               id="questionnaire-email"
@@ -240,6 +238,101 @@ export function Questionnaire() {
               </p>
             ) : null}
           </div>
+        </div>
+      ) : null}
+
+      {/* Question or summary */}
+      {currentQuestion ? (
+        <fieldset key={currentQuestion.id} className="flex flex-col gap-4">
+          <legend className="text-xl font-bold text-text-primary sm:text-2xl">
+            {currentQuestion.title}
+          </legend>
+          {currentQuestion.subtitle ? (
+            <p className="-mt-2 text-sm text-text-secondary">{currentQuestion.subtitle}</p>
+          ) : null}
+          <div className="flex flex-col gap-2.5">
+            {currentQuestion.options.map((option) => {
+              const selected =
+                currentQuestion.kind === "single"
+                  ? currentAnswer === option.value
+                  : Array.isArray(currentAnswer) && currentAnswer.includes(option.value);
+              return (
+                <div key={option.value} className="flex flex-col gap-2">
+                  <OptionCard
+                    icon={option.icon}
+                    label={option.label}
+                    selected={selected}
+                    type={currentQuestion.kind === "single" ? "radio" : "checkbox"}
+                    name={currentQuestion.id}
+                    onSelect={() =>
+                      currentQuestion.kind === "single"
+                        ? selectSingle(currentQuestion.id, option.value)
+                        : toggleMulti(currentQuestion.id, option.value, currentQuestion.exclusiveValue)
+                    }
+                  />
+                  {option.allowFreeText && selected ? (
+                    <input
+                      type="text"
+                      value={otherTexts[currentQuestion.id] ?? ""}
+                      onChange={(e) =>
+                        setOtherTexts((prev) => ({ ...prev, [currentQuestion.id]: e.target.value }))
+                      }
+                      placeholder="Tell us more (optional)"
+                      aria-label={`${option.label} — details`}
+                      className="ml-12 h-10 rounded-jb-sm border border-border bg-surface px-3 text-sm text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-brand-purple"
+                    />
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </fieldset>
+      ) : null}
+
+      {isSummaryStep ? (
+        <div className="flex flex-col gap-5">
+          <div>
+            <h3 className="text-xl font-bold text-text-primary sm:text-2xl">
+              Here&rsquo;s what you told us
+            </h3>
+            <p className="mt-1 text-sm text-text-secondary">
+              Nothing clinical, just a quick snapshot — you can go back and change anything.
+            </p>
+          </div>
+
+          <ul className="flex flex-col gap-2 rounded-jb-md border border-border bg-bg-elevated p-4 text-sm">
+            {(name.trim() || email.trim()) ? (
+              <li className="flex flex-col gap-0.5 border-b border-border pb-2 last:border-0 last:pb-0">
+                <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  Contact
+                </span>
+                <span className="text-text-primary">
+                  {[name.trim(), email.trim()].filter(Boolean).join(" · ")}
+                </span>
+              </li>
+            ) : null}
+            {ALL_QUESTIONS.map((q) => {
+              const value = answers[q.id];
+              const display = Array.isArray(value)
+                ? q.options
+                    .filter((o) => value.includes(o.value))
+                    .map((o) =>
+                      o.allowFreeText && otherTexts[q.id]?.trim()
+                        ? `${o.label} (${otherTexts[q.id].trim()})`
+                        : o.label
+                    )
+                    .join(", ") || "—"
+                : q.options.find((o) => o.value === value)?.label ?? "—";
+              return (
+                <li key={q.id} className="flex flex-col gap-0.5 border-b border-border pb-2 last:border-0 last:pb-0">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    {q.title}
+                  </span>
+                  <span className="text-text-primary">{display}</span>
+                </li>
+              );
+            })}
+          </ul>
 
           {/* Honeypot -- hidden from real users, bots tend to fill every field */}
           <div aria-hidden="true" className="hidden">
@@ -260,7 +353,7 @@ export function Questionnaire() {
             </p>
           ) : null}
         </div>
-      )}
+      ) : null}
 
       {/* Navigation */}
       <div className="flex items-center justify-between pt-2">
