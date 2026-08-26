@@ -22,6 +22,11 @@ export const feedbackSchema = z.object({
 export type FeedbackInput = z.infer<typeof feedbackSchema>;
 
 export const questionnaireAnswersSchema = z.object({
+  ageGroup: z.string().max(40).optional().default(""),
+  diagnosisStatus: z.string().max(40).optional().default(""),
+  adhdSubtype: z.string().max(40).optional().default(""),
+  comorbidities: z.array(z.string().max(40)).max(20).optional().default([]),
+  comorbiditiesOther: z.string().max(200).optional().default(""),
   struggle: z.array(z.string().max(80)).min(1).max(10),
   blocker: z.array(z.string().max(80)).min(1).max(10),
   focusLoss: z.array(z.string().max(80)).min(1).max(10),
@@ -31,6 +36,7 @@ export const questionnaireAnswersSchema = z.object({
 });
 
 export const questionnaireSchema = z.object({
+  name: z.string().trim().max(120).optional().default(""),
   answers: questionnaireAnswersSchema,
   email: emailSchema.optional().default(""),
   company: z.string().max(0, "Spam check failed.").optional().default(""),

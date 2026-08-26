@@ -1,11 +1,19 @@
-export type QuestionOption = { value: string; label: string; icon: string };
+export type QuestionOption = {
+  value: string;
+  label: string;
+  icon: string;
+  /** Shows an optional free-text input beneath this option when it's selected. */
+  allowFreeText?: boolean;
+};
 
 export type Question = {
-  id: "struggle" | "blocker" | "focusLoss" | "bigTaskReaction" | "triedBefore" | "wantsHelpWith";
+  id: string;
   kind: "single" | "multi";
   title: string;
   subtitle?: string;
   options: QuestionOption[];
+  /** For multi questions: selecting this option value clears every other selection (e.g. "None of the above"). */
+  exclusiveValue?: string;
 };
 
 export const QUESTIONS: Question[] = [

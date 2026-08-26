@@ -7,6 +7,11 @@ import { getClientKey, isRateLimited } from "@/lib/rate-limit";
 const MIN_FILL_TIME_MS = 3000;
 
 const QUESTION_LABELS: Record<string, string> = {
+  ageGroup: "Age group",
+  diagnosisStatus: "ADHD diagnosis status",
+  adhdSubtype: "ADHD subtype",
+  comorbidities: "Comorbidities",
+  comorbiditiesOther: "Other comorbidities (details)",
   struggle: "What they struggle with most",
   blocker: "What stops them from starting",
   focusLoss: "How easily focus slips",
@@ -37,7 +42,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: firstIssue }, { status: 400 });
   }
 
-  const { answers, email, company, formRenderedAt } = parsed.data;
+  const { name, answers, email, company, formRenderedAt } = parsed.data;
 
   if (company) {
     return NextResponse.json({ ok: true });
@@ -73,6 +78,7 @@ export async function POST(request: Request) {
       subject: "New JumpyBrain quick check-in submission",
       replyTo: email || undefined,
       text: [
+        `Name: ${name || "(not provided)"}`,
         `Email: ${email}`,
         "",
         ...rows.map((row) => `${row.label}: ${row.display}`),
@@ -80,6 +86,7 @@ export async function POST(request: Request) {
       html: `
         <div style="font-family: sans-serif; line-height: 1.6;">
           <h2 style="margin: 0 0 12px;">New quick check-in submission</h2>
+          <p><strong>Name:</strong> ${escapeHtml(name || "(not provided)")}</p>
           <p><strong>Email:</strong> ${escapeHtml(email)}</p>
           <table cellpadding="6" style="border-collapse: collapse; margin-top: 12px;">
             ${rows
