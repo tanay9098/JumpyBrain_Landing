@@ -1,5 +1,8 @@
 import { Logo } from "./logo";
 import { Container } from "@/components/ui/container";
+import { ButtonLink } from "@/components/ui/button";
+
+const BUY_ME_A_COFFEE_URL = "https://buymeacoffee.com/tanaydwivedi";
 
 const columns = [
   {
@@ -24,12 +27,27 @@ export function Footer() {
     <footer className="border-t border-border bg-bg-elevated">
       <Container className="flex flex-col gap-10 py-12">
         <div className="flex flex-col justify-between gap-8 sm:flex-row">
-          <div className="max-w-xs">
+          <div className="max-w-sm">
             <Logo />
             <p className="mt-4 text-sm leading-relaxed text-text-secondary">
               A calm command centre for ADHD brains — built to make starting easier
               and momentum stick.
             </p>
+            <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+              JumpyBrain is open source and kept running with the help of community
+              support. It&apos;s free to use — if it&apos;s helped you get started,
+              a coffee helps keep it going.
+            </p>
+            <ButtonLink
+              href={BUY_ME_A_COFFEE_URL}
+              variant="ghost"
+              size="md"
+              external
+              icon={<span aria-hidden="true">☕</span>}
+              className="mt-4"
+            >
+              Buy me a coffee
+            </ButtonLink>
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:flex sm:gap-16">
