@@ -14,6 +14,8 @@ const NAV_LINKS = [
   { href: "#feedback", label: "Feedback" },
 ];
 
+const BUY_ME_A_COFFEE_URL = "https://buymeacoffee.com/tanaydwivedi";
+
 export function Header() {
   const [open, setOpen] = useState(false);
 
@@ -40,6 +42,16 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <a
+            href={BUY_ME_A_COFFEE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Buy me a coffee"
+            title="JumpyBrain is open source and kept running with the help of community support. It's free to use — if it's helped you get started, a coffee helps keep it going."
+            className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-base transition-colors hover:bg-surface-hover min-[1100px]:inline-flex"
+          >
+            <span aria-hidden="true">☕</span>
+          </a>
           <ThemeToggle />
           <ButtonLink href="#questionnaire" size="md">
             Try JumpyBrain
@@ -98,6 +110,23 @@ export function Header() {
           </ul>
           <ButtonLink href="#questionnaire" className="mt-3 w-full" onClick={() => setOpen(false)}>
             Try JumpyBrain
+          </ButtonLink>
+
+          <p className="mt-4 text-sm leading-relaxed text-text-secondary">
+            JumpyBrain is open source and kept running with the help of community
+            support. It&apos;s free to use — if it&apos;s helped you get started,
+            a coffee helps keep it going.
+          </p>
+          <ButtonLink
+            href={BUY_ME_A_COFFEE_URL}
+            variant="ghost"
+            size="md"
+            external
+            icon={<span aria-hidden="true">☕</span>}
+            className="mt-3 w-full"
+            onClick={() => setOpen(false)}
+          >
+            Buy me a coffee
           </ButtonLink>
         </nav>
       ) : null}
