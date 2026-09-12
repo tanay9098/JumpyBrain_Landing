@@ -27,8 +27,8 @@ export function Hero() {
             focus once you&rsquo;re in motion.
           </p>
 
-          <ButtonLink href="https://bouncy-brain.vercel.app/" size="lg" external>
-            Try JumpyBrain free
+          <ButtonLink href="/coming-soon" size="lg">
+            App is still in development
           </ButtonLink>
         </div>
 
