@@ -7,11 +7,11 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { ButtonLink } from "@/components/ui/button";
 
 const NAV_LINKS = [
-  { href: "#problem", label: "Why JumpyBrain" },
-  { href: "#features", label: "Features" },
-  { href: "#how-it-works", label: "How it works" },
-  { href: "#questionnaire", label: "Quick check-in" },
-  { href: "#feedback", label: "Feedback" },
+  { href: "/#problem", label: "Why JumpyBrain" },
+  { href: "/#features", label: "Features" },
+  { href: "/#how-it-works", label: "How it works" },
+  { href: "/#questionnaire", label: "Quick check-in" },
+  { href: "/#feedback", label: "Feedback" },
 ];
 
 const BUY_ME_A_COFFEE_URL = "https://buymeacoffee.com/tanaydwivedi";
@@ -22,7 +22,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-bg/80 backdrop-blur-md">
       <div className="mx-auto flex h-18 w-full max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
-        <Link href="#top" className="flex items-center" aria-label="JumpyBrain home">
+        <Link href="/#top" className="flex items-center" aria-label="JumpyBrain home">
           <Logo />
         </Link>
 
@@ -54,7 +54,7 @@ export function Header() {
             </ButtonLink>
           </div>
           <ThemeToggle />
-          <ButtonLink href="#questionnaire" size="md">
+          <ButtonLink href="/#questionnaire" size="md">
             Try JumpyBrain
           </ButtonLink>
         </div>
@@ -109,7 +109,7 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <ButtonLink href="#questionnaire" className="mt-3 w-full" onClick={() => setOpen(false)}>
+          <ButtonLink href="/#questionnaire" className="mt-3 w-full" onClick={() => setOpen(false)}>
             Try JumpyBrain
           </ButtonLink>
 

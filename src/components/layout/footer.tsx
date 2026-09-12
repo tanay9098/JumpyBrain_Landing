@@ -8,16 +8,16 @@ const columns = [
   {
     title: "Product",
     links: [
-      { href: "#features", label: "Features" },
-      { href: "#how-it-works", label: "How it works" },
-      { href: "#showcase", label: "App tour" },
+      { href: "/#features", label: "Features" },
+      { href: "/#how-it-works", label: "How it works" },
+      { href: "/#showcase", label: "App tour" },
     ],
   },
   {
     title: "Get involved",
     links: [
-      { href: "#questionnaire", label: "Quick check-in" },
-      { href: "#feedback", label: "Share feedback" },
+      { href: "/#questionnaire", label: "Quick check-in" },
+      { href: "/#feedback", label: "Share feedback" },
     ],
   },
 ];

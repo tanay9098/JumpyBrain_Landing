@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { AppMockup } from "./app-mockup";
 
@@ -27,9 +27,9 @@ export function Hero() {
             focus once you&rsquo;re in motion.
           </p>
 
-          <Button size="lg" disabled>
+          <ButtonLink href="/coming-soon" size="lg">
             App is still in development
-          </Button>
+          </ButtonLink>
         </div>
 
         <div className="jb-reveal [animation-delay:120ms]">
