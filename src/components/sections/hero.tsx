@@ -1,4 +1,4 @@
-import { ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { AppMockup } from "./app-mockup";
 
@@ -27,9 +27,9 @@ export function Hero() {
             focus once you&rsquo;re in motion.
           </p>
 
-          <ButtonLink href="https://bouncy-brain.vercel.app/" size="lg" external>
-            Try JumpyBrain free
-          </ButtonLink>
+          <Button size="lg" disabled>
+            App is still in development
+          </Button>
         </div>
 
         <div className="jb-reveal [animation-delay:120ms]">
